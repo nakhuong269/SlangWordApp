@@ -22,7 +22,15 @@ public class Main extends JPanel implements ActionListener{
     FlowLayout fl1;
     CardLayout cl;
 
-    static HashMap<String, String> map;
+    static Dictionary dictionary;
+
+    static {
+        try {
+            dictionary = new Dictionary();
+        } catch (FileNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     public static void main(String args[]) throws FileNotFoundException {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -30,7 +38,6 @@ public class Main extends JPanel implements ActionListener{
                 createAndShowGUI();
             }
         });
-        initData();
     }
 
     public Main()
@@ -150,35 +157,9 @@ public class Main extends JPanel implements ActionListener{
         }
         else if(str.equals("btnSearch"))
         {
-            System.out.println(findSlangWord(tfSearch.getText()));
+            System.out.println(dictionary.findSlangWord(tfSearch.getText()));
+        } else if (str.equals("btnSearchDefinition")) {
+            System.out.println(dictionary.findDefinitionSlangWord(tfSearch.getText()));
         }
-    }
-
-    private static void initData() throws FileNotFoundException {
-        String url = "slang.txt";
-
-        File file = new File(url);
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-
-        try {
-            String line = reader.readLine();
-            map = new HashMap<String,String>();
-            while (line != null) {
-                String[] w = line.split("`");
-                map.put(w[0],w[1]);
-                line = reader.readLine();
-            }
-        }catch (Exception e)
-        {
-            System.out.print(e.getMessage());
-        }
-    }
-
-    private String findSlangWord(String slang)
-    {
-        if(map.containsKey(slang)) {
-            return map.get(slang);
-        }
-        return "";
     }
 }
