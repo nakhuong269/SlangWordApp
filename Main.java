@@ -22,15 +22,8 @@ public class Main extends JPanel implements ActionListener{
     FlowLayout fl1;
     CardLayout cl;
 
-    static Dictionary dictionary;
+    static Dictionary dictionary = new Dictionary();
 
-    static {
-        try {
-            dictionary = new Dictionary();
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
     public static void main(String args[]) throws FileNotFoundException {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -38,6 +31,7 @@ public class Main extends JPanel implements ActionListener{
                 createAndShowGUI();
             }
         });
+        dictionary.Input();
     }
 
     public Main()
@@ -59,6 +53,8 @@ public class Main extends JPanel implements ActionListener{
         btnSearch.addActionListener(this);
         btnSearch.setActionCommand("btnSearch");
         btnSearchDefinition = new JButton("Tìm kiếm liên quan");
+        btnSearchDefinition.addActionListener(this);
+        btnSearchDefinition.setActionCommand("btnSearchDefinition");
 
         pn2.add(tfSearch);
         pn2.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -71,8 +67,8 @@ public class Main extends JPanel implements ActionListener{
         pn3.setLayout(fl1);
 
         //Button
-        btnAdd = new JButton("Thêm");
-        //btnAdd.addActionListener(this);
+        btnAdd = new JButton("Thêm mới");
+        btnAdd.addActionListener(this);
         btnAdd.setActionCommand("btnAdd");
         btnEdit = new JButton("Chỉnh sửa");
         //btnEdit.addActionListener(this);
@@ -150,16 +146,17 @@ public class Main extends JPanel implements ActionListener{
         if(str.equals("btnHome"))
         {
             cl.show(pnCont,"Home");
-            System.out.println("Home");
         } else if (str.equals("btnGame")) {
             cl.show(pnCont,"Game");
-            System.out.println("Game");
         }
         else if(str.equals("btnSearch"))
         {
             System.out.println(dictionary.findSlangWord(tfSearch.getText()));
         } else if (str.equals("btnSearchDefinition")) {
             System.out.println(dictionary.findDefinitionSlangWord(tfSearch.getText()));
+        } else if (str.equals("btnAdd")) {
+            AddFrm addFrm = new AddFrm();
+            addFrm.setVisible(true);
         }
     }
 }

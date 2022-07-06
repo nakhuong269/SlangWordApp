@@ -1,12 +1,12 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import javax.swing.*;
+import java.awt.*;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
-public class Dictionary {
+public class Dictionary extends Component {
     private HashMap<String, String> map = new HashMap<String,String>();
 
     public HashMap<String, String> getMap() {
@@ -18,9 +18,7 @@ public class Dictionary {
     }
 
 
-    public Dictionary() throws FileNotFoundException {
-        Input();
-    }
+    public Dictionary() {}
 
 
     public void Input() throws FileNotFoundException {
@@ -33,7 +31,8 @@ public class Dictionary {
             String line = reader.readLine();
             while (line != null) {
                 String[] w = line.split("`");
-                map.put(w[0],w[1]);
+                SlangWord slangWord = new SlangWord(w[0],w[1]);
+                map.put(slangWord.getSlag(),slangWord.getMean());
                 line = reader.readLine();
             }
         }catch (Exception e)
@@ -60,5 +59,21 @@ public class Dictionary {
             }
         }
         return temp;
+    }
+
+    public void addSlangWord(SlangWord slangWord)
+    {
+        try
+        {
+            String filename= "slang.txt";
+            FileWriter fw = new FileWriter(filename,true);
+            fw.write(slangWord.getSlag()+"`"+slangWord.getMean()+"\n");
+            fw.close();
+            this.Input();
+        }
+        catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(this,"Lỗi");
+        }
     }
 }
