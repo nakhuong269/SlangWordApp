@@ -15,11 +15,11 @@ import java.util.Objects;
 
 public class Main extends JPanel implements ActionListener{
     JPanel pn1, pn2, pn3, pn4, pn5, pn6, pnCont , pn7, pn8  ;
-    JButton btnAdd, btnEdit, btnDelete, btnSearch, btnSearchDefinition, btnRandom, btnReset, btnHome, btnGame;
+    JButton btnAdd, btnEdit, btnDelete, btnSearch, btnSearchDefinition, btnPageRandom,  btnRandom, btnReset, btnHome, btnGame;
     JTextField tfSearch;
-    BoxLayout bl1, bl2;
+    BoxLayout bl1, bl2, bl3;
 
-    JLabel lb22;
+    JLabel lb1, lb2, lbSlang, lbMean;
     BorderLayout bdl1;
     FlowLayout fl1;
     CardLayout cl;
@@ -108,13 +108,13 @@ public class Main extends JPanel implements ActionListener{
         btnGame.addActionListener(this);
         btnGame.setActionCommand("btnGame");
 
-        btnRandom = new JButton("Từ ngẫu nhiên");
-        btnRandom.addActionListener(this);
-        btnRandom.setActionCommand("btnRandom");
+        btnPageRandom = new JButton("Từ ngẫu nhiên");
+        btnPageRandom.addActionListener(this);
+        btnPageRandom.setActionCommand("btnPageRandom");
 
         pn6.setBorder(new EmptyBorder(0,0,20,0));
         pn6.add(btnHome);
-        pn6.add(btnRandom);
+        pn6.add(btnPageRandom);
         pn6.add(btnGame);
 
 
@@ -123,7 +123,38 @@ public class Main extends JPanel implements ActionListener{
         pnCont.add(pn4,"Home");
 
         pn8 = new JPanel();
-        pn8.setBackground(Color.YELLOW);
+        bl3 = new BoxLayout(pn8,BoxLayout.PAGE_AXIS);
+        pn8.setLayout(bl3);
+
+        lbSlang = new JLabel();
+        lbSlang.setAlignmentX(CENTER_ALIGNMENT);
+        lbSlang.setFont(new Font("Arial",Font.PLAIN, 34));
+        lbMean = new JLabel();
+        lbMean.setAlignmentX(CENTER_ALIGNMENT);
+        lbMean.setFont(new Font("Arial",Font.PLAIN, 28));
+        lb1 = new JLabel("Từ: ");
+        lb1.setAlignmentX(CENTER_ALIGNMENT);
+        lb1.setFont(new Font("Arial",Font.PLAIN, 22));
+        lb2 = new JLabel("Nghĩa: ");
+        lb2.setAlignmentX(CENTER_ALIGNMENT);
+        lb2.setFont(new Font("Arial",Font.PLAIN, 22));
+
+        btnRandom = new JButton("Bắt đầu");
+        btnRandom.addActionListener(this);
+        btnRandom.setActionCommand("btnRandom");
+        btnRandom.setAlignmentX(CENTER_ALIGNMENT);
+        pn8.add(lb1);
+        pn8.add(Box.createRigidArea(new Dimension(0 ,15)));
+        pn8.add(lbSlang);
+        pn8.add(Box.createRigidArea(new Dimension(0 ,15)));
+        pn8.add(Box.createRigidArea(new Dimension(0 ,15)));
+        pn8.add(lb2);
+        pn8.add(Box.createRigidArea(new Dimension(0 ,15)));
+        pn8.add(Box.createRigidArea(new Dimension(0 ,15)));
+        pn8.add(lbMean);
+        pn8.add(Box.createRigidArea(new Dimension(0 ,30)));
+        pn8.add(btnRandom);
+
         pnCont.add(pn8, "Random");
 
         pn5 = new JPanel();
@@ -178,7 +209,7 @@ public class Main extends JPanel implements ActionListener{
         } else if (str.equals("btnGame")) {
             cl.show(pnCont,"Game");
         }
-        else if (str.equals("btnRandom")) {
+        else if (str.equals("btnPageRandom")) {
             cl.show(pnCont,"Random");
         }
         else if(str.equals("btnSearch"))
@@ -222,6 +253,11 @@ public class Main extends JPanel implements ActionListener{
                 JOptionPane.showMessageDialog(this,"Vui lòng tìm kiếm và chọn từ cần xóa",
                         "Thông báo",JOptionPane.INFORMATION_MESSAGE);
             }
+        }
+        else if (str.equals("btnRandom")) {
+            SlangWord slangWord = dictionary.randomSlangWord();
+            lbSlang.setText(slangWord.getSlag());
+            lbMean.setText(slangWord.getMean());
         }
     }
 

@@ -2,16 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Dictionary extends Component {
     private HashMap<String, String> map = new HashMap<String,String>();
 
     private LinkedHashMap<String, String> resultSearch;
+
+    private LinkedHashMap<String,String> linkedHashMapRandom;
 
     public Dictionary(LinkedHashMap<String, String> resultSearch) {
         this.resultSearch = resultSearch;
@@ -136,4 +135,15 @@ public class Dictionary extends Component {
         }
         return true;
     }
+
+
+    public SlangWord randomSlangWord()
+    {
+        Object[] randomString = map.keySet().toArray();
+        int Index = new Random().nextInt(randomString.length);
+        Object key = randomString[Index];
+
+        return new SlangWord(key.toString(), map.get(key));
+    }
+
 }

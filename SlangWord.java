@@ -24,4 +24,6 @@ public class SlangWord {
         Slag = slag;
         Mean = mean;
     }
+
+    public SlangWord(){};
 }
