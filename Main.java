@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,10 +10,11 @@ import java.io.*;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Main extends JPanel implements ActionListener{
-    JPanel pn1, pn2, pn3, pn4, pn5, pn6, pnCont , pn7  ;
+    JPanel pn1, pn2, pn3, pn4, pn5, pn6, pnCont , pn7, pn8  ;
     JButton btnAdd, btnEdit, btnDelete, btnSearch, btnSearchDefinition, btnRandom, btnReset, btnHome, btnGame;
     JTextField tfSearch;
     BoxLayout bl1, bl2;
@@ -21,7 +23,9 @@ public class Main extends JPanel implements ActionListener{
     BorderLayout bdl1;
     FlowLayout fl1;
     CardLayout cl;
+    String[] colHeader = { "Từ", "Nghĩa"};
 
+    JTable jtbSlangWord;
     static Dictionary dictionary = new Dictionary();
 
 
@@ -71,10 +75,10 @@ public class Main extends JPanel implements ActionListener{
         btnAdd.addActionListener(this);
         btnAdd.setActionCommand("btnAdd");
         btnEdit = new JButton("Chỉnh sửa");
-        //btnEdit.addActionListener(this);
+        btnEdit.addActionListener(this);
         btnEdit.setActionCommand("btnEdit");
         btnDelete = new JButton("Xóa");
-        //btnDelete.addActionListener(this);
+        btnDelete.addActionListener(this);
         btnDelete.setActionCommand("btnDelete");
 
         pn3.add(btnAdd);
@@ -103,17 +107,42 @@ public class Main extends JPanel implements ActionListener{
         btnGame = new JButton("Đố vui");
         btnGame.addActionListener(this);
         btnGame.setActionCommand("btnGame");
+
+        btnRandom = new JButton("Từ ngẫu nhiên");
+        btnRandom.addActionListener(this);
+        btnRandom.setActionCommand("btnRandom");
+
         pn6.setBorder(new EmptyBorder(0,0,20,0));
         pn6.add(btnHome);
+        pn6.add(btnRandom);
         pn6.add(btnGame);
+
 
         pnCont = new JPanel();
         pnCont.setLayout(cl);
         pnCont.add(pn4,"Home");
 
+        pn8 = new JPanel();
+        pn8.setBackground(Color.YELLOW);
+        pnCont.add(pn8, "Random");
+
         pn5 = new JPanel();
         pn5.setBackground(Color.BLACK);
         pnCont.add(pn5,"Game");
+
+        //Table
+        DefaultTableModel table_model = new DefaultTableModel(colHeader,0);
+        jtbSlangWord = new JTable(table_model);
+        jtbSlangWord.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SlangWord slangWord = new SlangWord(
+                        jtbSlangWord.getValueAt(jtbSlangWord.getSelectedRow(),0).toString(),
+                        jtbSlangWord.getValueAt(jtbSlangWord.getSelectedRow(),1).toString());
+            }});
+        jtbSlangWord.setDefaultEditor(Object.class, null);
+
+        pn7.add(new JScrollPane(jtbSlangWord));
 
         add(pn6,BorderLayout.PAGE_START);
         add(pnCont, BorderLayout.CENTER);
@@ -149,14 +178,63 @@ public class Main extends JPanel implements ActionListener{
         } else if (str.equals("btnGame")) {
             cl.show(pnCont,"Game");
         }
+        else if (str.equals("btnRandom")) {
+            cl.show(pnCont,"Random");
+        }
         else if(str.equals("btnSearch"))
         {
-            System.out.println(dictionary.findSlangWord(tfSearch.getText()));
+            dictionary.findSlangWord(tfSearch.getText());
+            fillTable();
         } else if (str.equals("btnSearchDefinition")) {
-            System.out.println(dictionary.findDefinitionSlangWord(tfSearch.getText()));
+            dictionary.findDefinitionSlangWord(tfSearch.getText());
+            fillTable();
         } else if (str.equals("btnAdd")) {
             AddFrm addFrm = new AddFrm();
             addFrm.setVisible(true);
+            try {
+                dictionary.Input();
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(this,"Lỗi");
+            }
+        } else if (str.equals("btnEdit")) {
+            if(jtbSlangWord.getSelectionModel().isSelectionEmpty()==false)
+            {
+                EditFrm editFrm = new EditFrm();
+                editFrm.tfSlag.setText(jtbSlangWord.getValueAt(jtbSlangWord.getSelectedRow(),0).toString());
+                editFrm.tfMean.setText(jtbSlangWord.getValueAt(jtbSlangWord.getSelectedRow(),1).toString());
+                editFrm.setVisible(true);
+                fillTable();
+            }else {
+                JOptionPane.showMessageDialog(this,"Vui lòng tìm kiếm và chọn từ cần chỉnh sửa",
+                        "Thông báo",JOptionPane.INFORMATION_MESSAGE);
+            }
+        } else if (str.equals("btnDelete")) {
+            if(jtbSlangWord.getSelectionModel().isSelectionEmpty()==false)
+            {
+                if(dictionary.deleteSlangWord(new SlangWord(
+                        jtbSlangWord.getValueAt(jtbSlangWord.getSelectedRow(),0).toString(),
+                        jtbSlangWord.getValueAt(jtbSlangWord.getSelectedRow(),1).toString())))
+                {
+                    JOptionPane.showMessageDialog(this,"Xóa thành công");
+                }
+                fillTable();
+            }else {
+                JOptionPane.showMessageDialog(this,"Vui lòng tìm kiếm và chọn từ cần xóa",
+                        "Thông báo",JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }
+
+    private void fillTable()
+    {
+        DefaultTableModel model = (DefaultTableModel) jtbSlangWord.getModel();
+        model.setRowCount(0);
+        for(Map.Entry<String, String> entry : dictionary.getResultSearch().entrySet()) {
+            SlangWord slangWord = new SlangWord(entry.getKey(),entry.getValue());
+            Object [] rowdata = new Object[2];
+            rowdata[0] = slangWord.getSlag();
+            rowdata[1] = slangWord.getMean();
+            model.addRow(rowdata);
         }
     }
 }

@@ -4,10 +4,26 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Dictionary extends Component {
     private HashMap<String, String> map = new HashMap<String,String>();
+
+    private LinkedHashMap<String, String> resultSearch;
+
+    public Dictionary(LinkedHashMap<String, String> resultSearch) {
+        this.resultSearch = resultSearch;
+    }
+
+    public LinkedHashMap<String, String> getResultSearch() {
+        return resultSearch;
+    }
+
+    public void setResultSearch(LinkedHashMap<String, String> resultSearch) {
+        this.resultSearch = resultSearch;
+    }
 
     public HashMap<String, String> getMap() {
         return map;
@@ -42,26 +58,28 @@ public class Dictionary extends Component {
         System.out.println(map.size());
     }
 
-    public String findSlangWord(String slang)
+    public LinkedHashMap<String, String> findSlangWord(String slang)
     {
+        resultSearch = new LinkedHashMap<String,String>();
         if(map.containsKey(slang)) {
-            return map.get(slang);
+            resultSearch.put(slang, map.get(slang));
         }
-        return "";
+        return resultSearch;
     }
 
-    public ArrayList<String> findDefinitionSlangWord(String slang)
+    public LinkedHashMap<String,String> findDefinitionSlangWord(String slang)
     {
-        ArrayList<String> temp = new ArrayList<String>();
-        for (String value : map.values()){
-            if(value.toLowerCase().contains(slang.toLowerCase())){
-                temp.add(value);
+        resultSearch = new LinkedHashMap<String,String>();
+        for(Map.Entry<String, String> entry : map.entrySet()) {
+            SlangWord slangWord = new SlangWord(entry.getKey(),entry.getValue());
+            if(slangWord.getMean().toLowerCase().contains(slang.toLowerCase())){
+                resultSearch.put(slangWord.getSlag(),slangWord.getMean());
             }
         }
-        return temp;
+        return resultSearch;
     }
 
-    public void addSlangWord(SlangWord slangWord)
+    public boolean addSlangWord(SlangWord slangWord)
     {
         try
         {
@@ -70,10 +88,52 @@ public class Dictionary extends Component {
             fw.write(slangWord.getSlag()+"`"+slangWord.getMean()+"\n");
             fw.close();
             this.Input();
+            return true;
         }
         catch(Exception e)
         {
-            JOptionPane.showMessageDialog(this,"Lỗi");
+            return false;
         }
+    }
+
+    public boolean deleteSlangWord(SlangWord slangWord)
+    {
+        int dialogResult = JOptionPane.showConfirmDialog (this, "Bạn có muốn xóa từ " + slangWord.getSlag() +  " không?","Xóa từ",JOptionPane.YES_NO_OPTION);
+        if(dialogResult == JOptionPane.YES_OPTION) {
+            map.remove(slangWord.getSlag());
+            resultSearch.remove(slangWord.getSlag());
+            try {
+                String filename = "slang.txt";
+                FileWriter fw = new FileWriter(filename, false);
+                for(Map.Entry<String, String> entry : map.entrySet()) {
+                    fw.write(entry.getKey() + "`" + entry.getValue() + "\n");
+                }
+                fw.close();
+                this.Input();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Lỗi");
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean editSlangWord(SlangWord slangWord)
+    {
+        map.replace(slangWord.getSlag(),slangWord.getMean());
+        resultSearch.replace(slangWord.getSlag(),slangWord.getMean());
+        try {
+            String filename = "slang.txt";
+            FileWriter fw = new FileWriter(filename,false);
+            for(Map.Entry<String, String> entry : map.entrySet()) {
+                fw.write(entry.getKey() + "`" + entry.getValue() + "\n");
+            }
+            fw.close();
+            this.Input();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Lỗi");
+            return false;
+        }
+        return true;
     }
 }

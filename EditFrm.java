@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 
-public class AddFrm extends JDialog implements ActionListener {
+public class EditFrm extends JDialog implements ActionListener {
     JPanel pn1, pn2;
     GridBagLayout gbl1;
 
@@ -13,8 +13,8 @@ public class AddFrm extends JDialog implements ActionListener {
     JTextField tfSlag, tfMean;
 
     BoxLayout bl1;
-    JButton btnAdd, btnCancel;
-    public AddFrm()
+    JButton btnEdit, btnCancel;
+    public EditFrm()
     {
         pn1 = new JPanel();
         gbl1 = new GridBagLayout();
@@ -31,6 +31,7 @@ public class AddFrm extends JDialog implements ActionListener {
         tfSlag = new JTextField(18);
         tfSlag.setPreferredSize(new Dimension(80,30));
         tfSlag.setFont(font1);
+        tfSlag.setEditable(false);
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.insets = new Insets(0,10,10,10);
@@ -54,15 +55,15 @@ public class AddFrm extends JDialog implements ActionListener {
         pn2 = new JPanel();
         bl1 = new BoxLayout(pn2,BoxLayout.X_AXIS);
         pn2.setLayout(bl1);
-        btnAdd = new JButton("Thêm");
-        btnAdd.addActionListener(this);
-        btnAdd.setActionCommand("btnAdd");
+        btnEdit = new JButton("Cập nhật");
+        btnEdit.addActionListener(this);
+        btnEdit.setActionCommand("btnEdit");
 
 
         btnCancel = new JButton("Hủy");
         btnCancel.addActionListener(this);
         btnCancel.setActionCommand("btnCancel");
-        pn2.add(btnAdd);
+        pn2.add(btnEdit);
         pn2.add(Box.createRigidArea(new Dimension(80,0)));
         pn2.add(btnCancel);
         gridBagConstraints.gridx = 0;
@@ -74,7 +75,7 @@ public class AddFrm extends JDialog implements ActionListener {
 
 
         add(pn1);
-        setTitle("Thêm Slang");
+        setTitle("Cập nhật Slang");
         setMinimumSize(new Dimension(250,180));
         setModal(true);
         pack();
@@ -84,20 +85,20 @@ public class AddFrm extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String str = e.getActionCommand();
-        if(str.equals("btnAdd"))
+        if(str.equals("btnEdit"))
         {
-            if(tfSlag.getText().isEmpty() || tfMean.getText().isEmpty())
+            if(tfMean.getText().isEmpty())
             {
                 JOptionPane.showMessageDialog(this,"Vui lòng nhập đủ thông tin","Thông báo",
                         JOptionPane.ERROR_MESSAGE);
             }
             else {
                 SlangWord slangWord = new SlangWord(tfSlag.getText().trim(), tfMean.getText().trim());
-                Dictionary dictionary = new Dictionary();
 
-                if(dictionary.addSlangWord(slangWord))
+
+                if(Main.dictionary.editSlangWord(slangWord))
                 {
-                    JOptionPane.showMessageDialog(this,"Thêm thành công");
+                    JOptionPane.showMessageDialog(this,"Cập nhật thành công");
                 }
                 else {
                     JOptionPane.showMessageDialog(this,"Lỗi");
