@@ -20,7 +20,7 @@ public class Main extends JPanel implements ActionListener{
     BorderLayout bdl1, bdl2;
     FlowLayout fl1;
     CardLayout cl;
-    String[] colHeader = { "Từ", "Nghĩa"};
+    String[] colHeader = { "Slang", "Mean"};
 
     ButtonGroup bgMode, bgAnswer;
 
@@ -55,10 +55,10 @@ public class Main extends JPanel implements ActionListener{
         bl2 = new BoxLayout(pn2, BoxLayout.X_AXIS);
         pn2.setLayout(bl2);
         pn2.setBorder(new EmptyBorder(0, 0,15,0));
-        btnSearch = new JButton("Tìm kiếm chính xác");
+        btnSearch = new JButton("Slang Search");
         btnSearch.addActionListener(this);
         btnSearch.setActionCommand("btnSearch");
-        btnSearchDefinition = new JButton("Tìm kiếm liên quan");
+        btnSearchDefinition = new JButton("Definition Search");
         btnSearchDefinition.addActionListener(this);
         btnSearchDefinition.setActionCommand("btnSearchDefinition");
 
@@ -73,13 +73,13 @@ public class Main extends JPanel implements ActionListener{
         pn3.setLayout(fl1);
 
         //Button
-        btnAdd = new JButton("Thêm mới");
+        btnAdd = new JButton("Add");
         btnAdd.addActionListener(this);
         btnAdd.setActionCommand("btnAdd");
-        btnEdit = new JButton("Chỉnh sửa");
+        btnEdit = new JButton("Edit");
         btnEdit.addActionListener(this);
         btnEdit.setActionCommand("btnEdit");
-        btnDelete = new JButton("Xóa");
+        btnDelete = new JButton("Delete");
         btnDelete.addActionListener(this);
         btnDelete.setActionCommand("btnDelete");
 
@@ -102,15 +102,15 @@ public class Main extends JPanel implements ActionListener{
         pn4.add(pn7);
 
         pn6 = new JPanel();
-        btnHome = new JButton("Trang chủ");
+        btnHome = new JButton("Home");
         btnHome.addActionListener(this);
         btnHome.setActionCommand("btnHome");
 
-        btnGame = new JButton("Đố vui");
+        btnGame = new JButton("Quiz");
         btnGame.addActionListener(this);
         btnGame.setActionCommand("btnGame");
 
-        btnPageRandom = new JButton("Từ ngẫu nhiên");
+        btnPageRandom = new JButton("Random");
         btnPageRandom.addActionListener(this);
         btnPageRandom.setActionCommand("btnPageRandom");
 
@@ -118,11 +118,16 @@ public class Main extends JPanel implements ActionListener{
         btnHistory.addActionListener(this);
         btnHistory.setActionCommand("btnHistory");
 
+        btnReset = new JButton("Reset");
+        btnReset.addActionListener(this);
+        btnReset.setActionCommand("btnReset");
+
         pn6.setBorder(new EmptyBorder(0,0,20,0));
         pn6.add(btnHome);
         pn6.add(btnPageRandom);
         pn6.add(btnGame);
         pn6.add(btnHistory);
+        pn6.add(btnReset);
 
 
         pnCont = new JPanel();
@@ -139,14 +144,14 @@ public class Main extends JPanel implements ActionListener{
         lbMean = new JLabel();
         lbMean.setAlignmentX(CENTER_ALIGNMENT);
         lbMean.setFont(new Font("Arial",Font.PLAIN, 26));
-        lb1 = new JLabel("Từ: ");
+        lb1 = new JLabel("Slang: ");
         lb1.setAlignmentX(CENTER_ALIGNMENT);
         lb1.setFont(new Font("Arial",Font.PLAIN, 22));
-        lb2 = new JLabel("Nghĩa: ");
+        lb2 = new JLabel("Mean: ");
         lb2.setAlignmentX(CENTER_ALIGNMENT);
         lb2.setFont(new Font("Arial",Font.PLAIN, 22));
 
-        btnRandom = new JButton("Làm mới");
+        btnRandom = new JButton("Start");
         btnRandom.addActionListener(this);
         btnRandom.setActionCommand("btnRandom");
         btnRandom.setAlignmentX(CENTER_ALIGNMENT);
@@ -168,9 +173,9 @@ public class Main extends JPanel implements ActionListener{
 
 
         pn9 = new JPanel();
-        lb3 = new JLabel("Đố vui theo: ");
-        rdbSlangGame = new JRadioButton("Từ");
-        rdbMeanGame = new JRadioButton("Nghĩa");
+        lb3 = new JLabel("Quiz: ");
+        rdbSlangGame = new JRadioButton("Slang");
+        rdbMeanGame = new JRadioButton("Mean");
         lb3.setFont(new Font("Arial", Font.BOLD,22));
         pn9.add(lb3);
         pn9.add(rdbSlangGame);
@@ -368,7 +373,7 @@ public class Main extends JPanel implements ActionListener{
             try {
                 dictionary.Input();
             } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(this,"Lỗi");
+                JOptionPane.showMessageDialog(this,"Error");
             }
         } else if (str.equals("btnEdit")) {
             if(jtbSlangWord.getSelectionModel().isSelectionEmpty()==false)
@@ -379,8 +384,8 @@ public class Main extends JPanel implements ActionListener{
                 editFrm.setVisible(true);
                 fillTable();
             }else {
-                JOptionPane.showMessageDialog(this,"Vui lòng tìm kiếm và chọn từ cần chỉnh sửa",
-                        "Thông báo",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this,"Please search and choose slang wanna edit",
+                        "Message",JOptionPane.INFORMATION_MESSAGE);
             }
         } else if (str.equals("btnDelete")) {
             if(jtbSlangWord.getSelectionModel().isSelectionEmpty()==false)
@@ -389,12 +394,12 @@ public class Main extends JPanel implements ActionListener{
                         jtbSlangWord.getValueAt(jtbSlangWord.getSelectedRow(),0).toString(),
                         jtbSlangWord.getValueAt(jtbSlangWord.getSelectedRow(),1).toString())))
                 {
-                    JOptionPane.showMessageDialog(this,"Xóa thành công");
+                    JOptionPane.showMessageDialog(this,"Delete Success");
                 }
                 fillTable();
             }else {
-                JOptionPane.showMessageDialog(this,"Vui lòng tìm kiếm và chọn từ cần xóa",
-                        "Thông báo",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this,"Please search and choose slang",
+                        "Message",JOptionPane.INFORMATION_MESSAGE);
             }
         }
         else if (str.equals("btnRandom")) {
@@ -461,6 +466,17 @@ public class Main extends JPanel implements ActionListener{
             lbSlangGame.setText("");
         } else if (str.equals("btnHistory")) {
             cl.show(pnCont,"History");
+        } else if (str.equals("btnReset")) {
+            int dialogResult = JOptionPane.showConfirmDialog (this, "Do you want to reset dictionary ?","Delete",JOptionPane.YES_NO_OPTION);
+            if(dialogResult == JOptionPane.YES_OPTION) {
+                try {
+                    dictionary.resetDictionary();
+                    fillTable();
+
+                } catch (FileNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
         }
     }
 

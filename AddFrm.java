@@ -54,12 +54,12 @@ public class AddFrm extends JDialog implements ActionListener {
         pn2 = new JPanel();
         bl1 = new BoxLayout(pn2,BoxLayout.X_AXIS);
         pn2.setLayout(bl1);
-        btnAdd = new JButton("Thêm");
+        btnAdd = new JButton("Add");
         btnAdd.addActionListener(this);
         btnAdd.setActionCommand("btnAdd");
 
 
-        btnCancel = new JButton("Hủy");
+        btnCancel = new JButton("Cancel");
         btnCancel.addActionListener(this);
         btnCancel.setActionCommand("btnCancel");
         pn2.add(btnAdd);
@@ -74,7 +74,7 @@ public class AddFrm extends JDialog implements ActionListener {
 
 
         add(pn1);
-        setTitle("Thêm Slang");
+        setTitle("Add Slang");
         setMinimumSize(new Dimension(250,180));
         setModal(true);
         pack();
@@ -88,7 +88,7 @@ public class AddFrm extends JDialog implements ActionListener {
         {
             if(tfSlag.getText().isEmpty() || tfMean.getText().isEmpty())
             {
-                JOptionPane.showMessageDialog(this,"Vui lòng nhập đủ thông tin","Thông báo",
+                JOptionPane.showMessageDialog(this,"Please input all information","Message",
                         JOptionPane.ERROR_MESSAGE);
             }
             else {
@@ -97,10 +97,10 @@ public class AddFrm extends JDialog implements ActionListener {
 
                 if(dictionary.addSlangWord(slangWord))
                 {
-                    JOptionPane.showMessageDialog(this,"Thêm thành công");
+                    JOptionPane.showMessageDialog(this,"Add Success");
                 }
                 else {
-                    JOptionPane.showMessageDialog(this,"Lỗi");
+                    JOptionPane.showMessageDialog(this,"Error");
                 }
             }
         }

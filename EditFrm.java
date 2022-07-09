@@ -55,12 +55,12 @@ public class EditFrm extends JDialog implements ActionListener {
         pn2 = new JPanel();
         bl1 = new BoxLayout(pn2,BoxLayout.X_AXIS);
         pn2.setLayout(bl1);
-        btnEdit = new JButton("Cập nhật");
+        btnEdit = new JButton("Update");
         btnEdit.addActionListener(this);
         btnEdit.setActionCommand("btnEdit");
 
 
-        btnCancel = new JButton("Hủy");
+        btnCancel = new JButton("Cancel");
         btnCancel.addActionListener(this);
         btnCancel.setActionCommand("btnCancel");
         pn2.add(btnEdit);
@@ -75,7 +75,7 @@ public class EditFrm extends JDialog implements ActionListener {
 
 
         add(pn1);
-        setTitle("Cập nhật Slang");
+        setTitle("Update Slang");
         setMinimumSize(new Dimension(250,180));
         setModal(true);
         pack();
@@ -89,7 +89,7 @@ public class EditFrm extends JDialog implements ActionListener {
         {
             if(tfMean.getText().isEmpty())
             {
-                JOptionPane.showMessageDialog(this,"Vui lòng nhập đủ thông tin","Thông báo",
+                JOptionPane.showMessageDialog(this,"Please input all information","Message",
                         JOptionPane.ERROR_MESSAGE);
             }
             else {
@@ -98,10 +98,10 @@ public class EditFrm extends JDialog implements ActionListener {
 
                 if(Main.dictionary.editSlangWord(slangWord))
                 {
-                    JOptionPane.showMessageDialog(this,"Cập nhật thành công");
+                    JOptionPane.showMessageDialog(this,"Update Success");
                 }
                 else {
-                    JOptionPane.showMessageDialog(this,"Lỗi");
+                    JOptionPane.showMessageDialog(this,"Error");
                 }
             }
         }

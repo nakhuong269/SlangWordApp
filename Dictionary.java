@@ -113,7 +113,7 @@ public class Dictionary extends Component {
 
     public boolean deleteSlangWord(SlangWord slangWord)
     {
-        int dialogResult = JOptionPane.showConfirmDialog (this, "Bạn có muốn xóa từ " + slangWord.getSlag() +  " không?","Xóa từ",JOptionPane.YES_NO_OPTION);
+        int dialogResult = JOptionPane.showConfirmDialog (this, "Do you want to delete slang " + slangWord.getSlag() +  " ?","Delete",JOptionPane.YES_NO_OPTION);
         if(dialogResult == JOptionPane.YES_OPTION) {
             map.remove(slangWord.getSlag());
             resultSearch.remove(slangWord.getSlag());
@@ -205,6 +205,28 @@ public class Dictionary extends Component {
             System.out.println(e.getMessage());
         }
         InputHistorySearch();
+    }
+
+    public void resetDictionary() throws FileNotFoundException {
+        String url = "slang-goc.txt";
+
+        File file = new File(url);
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+
+        map.clear();
+        resultSearch = new LinkedHashMap<String,String>();
+        try {
+            String line = reader.readLine();
+            while (line != null) {
+                String[] w = line.split("`");
+                SlangWord slangWord = new SlangWord(w[0],w[1]);
+                map.put(slangWord.getSlag(),slangWord.getMean());
+                line = reader.readLine();
+            }
+        }catch (Exception e)
+        {
+            System.out.print(e.getMessage());
+        }
     }
 
 }
