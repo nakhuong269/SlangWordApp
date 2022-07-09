@@ -8,15 +8,16 @@ import java.io.*;
 import java.util.*;
 
 public class Main extends JPanel implements ActionListener{
-    JPanel pn1, pn2, pn3, pn4, pn5, pn6, pnCont , pn7, pn8, pn9, pn10, pn11, pn12, pn14 ,pn15, pn16, pn17, pn18;
+    JPanel pn1, pn2, pn3, pn4, pn5, pn6, pnCont , pn7, pn8, pn9, pn10, pn11, pn12, pn13, pn14 ,pn15, pn16, pn17, pn18;
 
     JRadioButton rdbSlangGame, rdbMeanGame, rdbAnswerA, rdbAnswerB, rdbAnswerC, rdbAnswerD;
-    JButton btnAdd, btnEdit, btnDelete, btnSearch, btnSearchDefinition, btnPageRandom,  btnRandom, btnReset, btnHome, btnGame, btnRefeshGame, btnCheckGame ;
+    JButton btnAdd, btnEdit, btnDelete, btnSearch, btnSearchDefinition, btnPageRandom,  btnRandom, btnReset, btnHistory, btnHome, btnGame, btnRefeshGame, btnCheckGame ;
     JTextField tfSearch;
     BoxLayout bl1, bl2, bl3, bl4, bl5;
 
+    JList lHistory;
     JLabel lb1, lb2, lbSlang, lbMean, lb3, lbGame, lbSlangGame;
-    BorderLayout bdl1;
+    BorderLayout bdl1, bdl2;
     FlowLayout fl1;
     CardLayout cl;
     String[] colHeader = { "Từ", "Nghĩa"};
@@ -30,14 +31,17 @@ public class Main extends JPanel implements ActionListener{
     public static void main(String args[]) throws FileNotFoundException {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createAndShowGUI();
+                try {
+                    createAndShowGUI();
+                } catch (FileNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
         dictionary.Input();
     }
 
-    public Main()
-    {
+    public Main() throws FileNotFoundException {
         super(new BorderLayout());
         pn1 = new JPanel();
         bl1 = new BoxLayout(pn1,BoxLayout.Y_AXIS);
@@ -110,10 +114,15 @@ public class Main extends JPanel implements ActionListener{
         btnPageRandom.addActionListener(this);
         btnPageRandom.setActionCommand("btnPageRandom");
 
+        btnHistory = new JButton("History Search");
+        btnHistory.addActionListener(this);
+        btnHistory.setActionCommand("btnHistory");
+
         pn6.setBorder(new EmptyBorder(0,0,20,0));
         pn6.add(btnHome);
         pn6.add(btnPageRandom);
         pn6.add(btnGame);
+        pn6.add(btnHistory);
 
 
         pnCont = new JPanel();
@@ -256,6 +265,22 @@ public class Main extends JPanel implements ActionListener{
         pn5.add(pn11);
         pnCont.add(pn5,"Game");
 
+        pn13 = new JPanel();
+        bdl2 = new BorderLayout();
+        pn13.setLayout(bdl2);
+        pn13.setBorder(new EmptyBorder(10,10,10,10));
+        pn13.setPreferredSize(new Dimension(200,50));
+
+        DefaultListModel listmodel= new DefaultListModel();
+        listmodel.addAll(dictionary.getHistorySearch().values());
+
+        lHistory = new JList(listmodel);
+        lHistory.setBorder(new EmptyBorder(10,10,10,10));
+        JScrollPane scrollPane = new JScrollPane(lHistory,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        pn13.add(scrollPane, BorderLayout.CENTER);
+        pnCont.add(pn13, "History");
+
+
         //Table
         DefaultTableModel table_model = new DefaultTableModel(colHeader,0);
         jtbSlangWord = new JTable(table_model);
@@ -273,7 +298,7 @@ public class Main extends JPanel implements ActionListener{
         add(pn6,BorderLayout.PAGE_START);
         add(pnCont, BorderLayout.CENTER);
     }
-    private static void createAndShowGUI() {
+    private static void createAndShowGUI() throws FileNotFoundException {
         //Make sure we have nice window decorations.
         JFrame.setDefaultLookAndFeelDecorated(true);
 
@@ -315,9 +340,27 @@ public class Main extends JPanel implements ActionListener{
         else if(str.equals("btnSearch"))
         {
             dictionary.findSlangWord(tfSearch.getText());
+            try {
+                dictionary.addHistorySearch(tfSearch.getText());
+                dictionary.InputHistorySearch();
+                DefaultListModel listmodel= new DefaultListModel();
+                listmodel.addAll(dictionary.getHistorySearch().values());
+                lHistory.setModel(listmodel);
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
             fillTable();
         } else if (str.equals("btnSearchDefinition")) {
             dictionary.findDefinitionSlangWord(tfSearch.getText());
+            try {
+                dictionary.addHistorySearch(tfSearch.getText());
+                dictionary.InputHistorySearch();
+                DefaultListModel listmodel= new DefaultListModel();
+                listmodel.addAll(dictionary.getHistorySearch().values());
+                lHistory.setModel(listmodel);
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
             fillTable();
         } else if (str.equals("btnAdd")) {
             AddFrm addFrm = new AddFrm();
@@ -410,8 +453,14 @@ public class Main extends JPanel implements ActionListener{
             }
         } else if (str.equals("rdbSlang")) {
             randomSlangWord();
+            bgAnswer.clearSelection();
+            lbSlangGame.setText("");
         } else if (str.equals("rdbMean")) {
             randomDefinition();
+            bgAnswer.clearSelection();
+            lbSlangGame.setText("");
+        } else if (str.equals("btnHistory")) {
+            cl.show(pnCont,"History");
         }
     }
 

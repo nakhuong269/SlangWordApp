@@ -1,13 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Dictionary extends Component {
     private HashMap<String, String> map = new HashMap<String,String>();
 
+    private TreeMap<Integer,String> historySearch = new TreeMap<Integer,String>(Collections.reverseOrder());
     private LinkedHashMap<String, String> resultSearch;
 
     private ArrayList<String> randomArray;
@@ -26,6 +25,22 @@ public class Dictionary extends Component {
 
     public HashMap<String, String> getMap() {
         return map;
+    }
+
+    public TreeMap<Integer, String> getHistorySearch() {
+        return historySearch;
+    }
+
+    public void setHistorySearch(TreeMap<Integer, String> historySearch) {
+        this.historySearch = historySearch;
+    }
+
+    public ArrayList<String> getRandomArray() {
+        return randomArray;
+    }
+
+    public void setRandomArray(ArrayList<String> randomArray) {
+        this.randomArray = randomArray;
     }
 
     public void setMap(HashMap<String, String> map) {
@@ -55,6 +70,7 @@ public class Dictionary extends Component {
             System.out.print(e.getMessage());
         }
         System.out.println(map.size());
+        InputHistorySearch();
     }
 
     public LinkedHashMap<String, String> findSlangWord(String slang)
@@ -155,6 +171,40 @@ public class Dictionary extends Component {
             randomArray.add(slangWord.getSlag());
         }
         return randomArray;
+    }
+
+    public void InputHistorySearch() throws FileNotFoundException {
+        String url = "history.txt";
+
+        File file = new File(url);
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+
+        try {
+            String line = reader.readLine();
+            while (line != null) {
+                String[] w = line.split("`");
+                historySearch.put(Integer.parseInt(w[0]),w[1]);
+                line = reader.readLine();
+            }
+        }catch (Exception e)
+        {
+            System.out.print(e.getMessage());
+        }
+        System.out.println(historySearch.size());
+    }
+    public void addHistorySearch(String s) throws FileNotFoundException {
+        try
+        {
+            String filename= "history.txt";
+            FileWriter fw = new FileWriter(filename,true);
+            fw.write(this.historySearch.size() + "`"+ s + "\n");
+            fw.close();
+        }
+        catch(Exception e)
+        {
+            System.out.println(e.getMessage());
+        }
+        InputHistorySearch();
     }
 
 }
