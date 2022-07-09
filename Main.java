@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main extends JPanel implements ActionListener{
-    JPanel pn1, pn2, pn3, pn4, pn5, pn6, pnCont , pn7, pn8, pn9, pn10, pn11, pn12;
+    JPanel pn1, pn2, pn3, pn4, pn5, pn6, pnCont , pn7, pn8, pn9, pn10, pn11, pn12, pn14 ,pn15, pn16, pn17, pn18;
 
     JRadioButton rdbSlangGame, rdbMeanGame, rdbAnswerA, rdbAnswerB, rdbAnswerC, rdbAnswerD;
     JButton btnAdd, btnEdit, btnDelete, btnSearch, btnSearchDefinition, btnPageRandom,  btnRandom, btnReset, btnHome, btnGame, btnRefeshGame, btnCheckGame ;
@@ -167,9 +167,9 @@ public class Main extends JPanel implements ActionListener{
         pn9.add(rdbSlangGame);
         pn9.add(Box.createRigidArea(new Dimension(20,0)));
         pn9.add(rdbMeanGame);
-        rdbSlangGame.setActionCommand("Slang");
+        rdbSlangGame.setActionCommand("rdbSlang");
         rdbSlangGame.addActionListener(this);
-        rdbMeanGame.setActionCommand("Mean");
+        rdbMeanGame.setActionCommand("rdbMean");
         rdbMeanGame.addActionListener(this);
         bgMode= new ButtonGroup();
         bgMode.add(rdbSlangGame);
@@ -177,45 +177,68 @@ public class Main extends JPanel implements ActionListener{
 
 
 
+
+
+        lbGame = new JLabel();
+        lbGame.setFont(new Font("Arial",Font.BOLD,18));
+        lbGame.setAlignmentX(CENTER_ALIGNMENT);
+        pn14 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        pn14.add(lbGame);
+
+
         pn10 = new JPanel();
         bl4 = new BoxLayout(pn10, BoxLayout.Y_AXIS);
         pn10.setLayout(bl4);
-
-        lbGame = new JLabel();
-        lbGame.setFont(new Font("Arial",Font.BOLD,20));
-        lbGame.setAlignmentX(CENTER_ALIGNMENT);
-        pn10.add(lbGame);
-        pn10.add(Box.createRigidArea(new Dimension(0, 30)));
-
         bgAnswer = new ButtonGroup();
+
+
         rdbAnswerA = new JRadioButton();
         rdbAnswerB = new JRadioButton();
         rdbAnswerC = new JRadioButton();
         rdbAnswerD = new JRadioButton();
+        pn15 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        pn15.add(rdbAnswerA);
+        pn16 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        pn16.add(rdbAnswerB);
+        pn17 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        pn17.add(rdbAnswerC);
+        pn18 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        pn18.add(rdbAnswerD);
+
         bgAnswer.add(rdbAnswerA);
         bgAnswer.add(rdbAnswerB);
         bgAnswer.add(rdbAnswerC);
         bgAnswer.add(rdbAnswerD);
 
 
-        pn10.add(rdbAnswerA);
+        pn10.add(pn15);
         pn10.add(Box.createRigidArea(new Dimension(0,30)));
-        pn10.add(rdbAnswerB);
+        pn10.add(pn16);
         pn10.add(Box.createRigidArea(new Dimension(0,30)));
-        pn10.add(rdbAnswerC);
+        pn10.add(pn17);
         pn10.add(Box.createRigidArea(new Dimension(0,30)));
-        pn10.add(rdbAnswerD);
+        pn10.add(pn18);
         pn10.add(Box.createRigidArea(new Dimension(0,30)));
-        pn10.setBorder(new EmptyBorder(0,0,80,0));
 
+
+
+        lbSlangGame = new JLabel();
+        lbSlangGame.setAlignmentX(CENTER_ALIGNMENT);
 
 
         pn12 = new JPanel();
         btnRefeshGame = new JButton("Refesh");
+        btnRefeshGame.addActionListener(this);
+        btnRefeshGame.setActionCommand("btnRefeshGame");
         btnCheckGame = new JButton("Answer");
+        btnCheckGame.addActionListener(this);
+        btnCheckGame.setActionCommand("btnCheckGame");
         pn12.add(btnRefeshGame);
         pn12.add(Box.createRigidArea(new Dimension(50, 0)));
         pn12.add(btnCheckGame);
+
+
+
 
         pn11 = new JPanel();
         bl5 = new BoxLayout(pn11,BoxLayout.Y_AXIS);
@@ -223,7 +246,11 @@ public class Main extends JPanel implements ActionListener{
 
         pn11.add(pn9);
         pn11.add(Box.createRigidArea(new Dimension(0,30)));
+        pn11.add(pn14);
+        pn11.add(Box.createRigidArea(new Dimension(0,30)));
         pn11.add(pn10);
+        pn11.add(lbSlangGame);
+        pn11.add(Box.createRigidArea(new Dimension(0, 20)));
         pn11.add(pn12);
 
         pn5.add(pn11);
@@ -277,15 +304,9 @@ public class Main extends JPanel implements ActionListener{
         } else if (str.equals("btnGame")) {
             rdbSlangGame.setSelected(true);
             cl.show(pnCont,"Game");
-            ArrayList<String> listSlangword =  dictionary.randomSlangWordGame();
-
-            lbGame.setText(listSlangword.get(0));
-            
-            Collections.shuffle(listSlangword);
-            rdbAnswerA.setText(dictionary.getMap().get(listSlangword.get(0)));
-            rdbAnswerB.setText(dictionary.getMap().get(listSlangword.get(1)));
-            rdbAnswerC.setText(dictionary.getMap().get(listSlangword.get(2)));
-            rdbAnswerD.setText(dictionary.getMap().get(listSlangword.get(3)));
+            randomSlangWord();
+            bgAnswer.clearSelection();
+            lbSlangGame.setText("");
 
         }
         else if (str.equals("btnPageRandom")) {
@@ -337,7 +358,85 @@ public class Main extends JPanel implements ActionListener{
             SlangWord slangWord = dictionary.randomSlangWord();
             lbSlang.setText(slangWord.getSlag());
             lbMean.setText(slangWord.getMean());
+        } else if (str.equals("btnRefeshGame")) {
+            String rdbString = bgMode.getSelection().getActionCommand();
+            bgAnswer.clearSelection();
+            lbSlangGame.setText("");
+            if(rdbString.equals("rdbSlang"))
+            {
+                randomSlangWord();
+            }else{
+                randomDefinition();
+            }
+        } else if (str.equals("btnCheckGame")) {
+            String rdbString = bgMode.getSelection().getActionCommand();
+            String AnswerSelected = "";
+            if(rdbAnswerA.isSelected())
+            {
+                AnswerSelected = rdbAnswerA.getText();
+            }
+            else if(rdbAnswerB.isSelected()){
+                AnswerSelected = rdbAnswerB.getText();
+            } else if (rdbAnswerC.isSelected()) {
+                AnswerSelected = rdbAnswerC.getText();
+            } else if (rdbAnswerD.isSelected()) {
+                AnswerSelected = rdbAnswerD.getText();
+            }
+            if(rdbString.equals("rdbSlang"))
+            {
+                if(AnswerSelected.equals(dictionary.getMap().get(lbGame.getText())))
+                {
+                    lbSlangGame.setText("Correct");
+                    lbSlangGame.setFont(new Font("Arial",Font.BOLD,22));
+                    lbSlangGame.setForeground(Color.GREEN);
+                }
+                else {
+                    lbSlangGame.setText("Incorrect");
+                    lbSlangGame.setFont(new Font("Arial",Font.BOLD,22));
+                    lbSlangGame.setForeground(Color.RED);
+                }
+            }else{
+                if(dictionary.getMap().get(AnswerSelected).equals(lbGame.getText()))
+                {
+                    lbSlangGame.setText("Correct");
+                    lbSlangGame.setFont(new Font("Arial",Font.BOLD,22));
+                    lbSlangGame.setForeground(Color.GREEN);
+                }
+                else {
+                    lbSlangGame.setText("Incorrect");
+                    lbSlangGame.setFont(new Font("Arial",Font.BOLD,22));
+                    lbSlangGame.setForeground(Color.RED);
+                }
+            }
+        } else if (str.equals("rdbSlang")) {
+            randomSlangWord();
+        } else if (str.equals("rdbMean")) {
+            randomDefinition();
         }
+    }
+
+    private void randomSlangWord() {
+        ArrayList<String> listSlangword =  dictionary.randomSlangWordGame();
+
+        lbGame.setText(listSlangword.get(0));
+
+        Collections.shuffle(listSlangword);
+        rdbAnswerA.setText(dictionary.getMap().get(listSlangword.get(0)));
+        rdbAnswerB.setText(dictionary.getMap().get(listSlangword.get(1)));
+        rdbAnswerC.setText(dictionary.getMap().get(listSlangword.get(2)));
+        rdbAnswerD.setText(dictionary.getMap().get(listSlangword.get(3)));
+    }
+
+    private void randomDefinition() {
+        ArrayList<String> listSlangword =  dictionary.randomSlangWordGame();
+
+        lbGame.setText(dictionary.getMap().get(listSlangword.get(0)));
+
+        Collections.shuffle(listSlangword);
+        rdbAnswerA.setText(listSlangword.get(0));
+        rdbAnswerB.setText(listSlangword.get(1));
+        rdbAnswerC.setText(listSlangword.get(2));
+        rdbAnswerD.setText(listSlangword.get(3));
     }
 
     private void fillTable()
