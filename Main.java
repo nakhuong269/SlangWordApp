@@ -4,6 +4,8 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.*;
 
@@ -29,15 +31,11 @@ public class Main extends JPanel implements ActionListener{
 
 
     public static void main(String args[]) throws FileNotFoundException {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    createAndShowGUI();
-                } catch (FileNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
+            try {
+                createAndShowGUI();
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
             }
-        });
         dictionary.Input();
     }
 
@@ -276,11 +274,15 @@ public class Main extends JPanel implements ActionListener{
         pn13.setBorder(new EmptyBorder(10,10,10,10));
         pn13.setPreferredSize(new Dimension(200,50));
 
-        DefaultListModel listmodel= new DefaultListModel();
+        dictionary.InputHistorySearch();
+        DefaultListModel listmodel = new DefaultListModel();
         listmodel.addAll(dictionary.getHistorySearch().values());
+
 
         lHistory = new JList(listmodel);
         lHistory.setBorder(new EmptyBorder(10,10,10,10));
+
+        lHistory.setModel(listmodel);
         JScrollPane scrollPane = new JScrollPane(lHistory,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         pn13.add(scrollPane, BorderLayout.CENTER);
         pnCont.add(pn13, "History");
@@ -289,9 +291,9 @@ public class Main extends JPanel implements ActionListener{
         //Table
         DefaultTableModel table_model = new DefaultTableModel(colHeader,0);
         jtbSlangWord = new JTable(table_model);
-        jtbSlangWord.addMouseListener(new java.awt.event.MouseAdapter() {
+        jtbSlangWord.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
+            public void mouseClicked(MouseEvent evt) {
                 SlangWord slangWord = new SlangWord(
                         jtbSlangWord.getValueAt(jtbSlangWord.getSelectedRow(),0).toString(),
                         jtbSlangWord.getValueAt(jtbSlangWord.getSelectedRow(),1).toString());
@@ -344,29 +346,34 @@ public class Main extends JPanel implements ActionListener{
         }
         else if(str.equals("btnSearch"))
         {
-            dictionary.findSlangWord(tfSearch.getText());
-            try {
-                dictionary.addHistorySearch(tfSearch.getText());
-                dictionary.InputHistorySearch();
-                DefaultListModel listmodel= new DefaultListModel();
-                listmodel.addAll(dictionary.getHistorySearch().values());
-                lHistory.setModel(listmodel);
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
+            if(!tfSearch.getText().isEmpty()) {
+                dictionary.findSlangWord(tfSearch.getText());
+                try {
+                    dictionary.addHistorySearch(tfSearch.getText());
+                    dictionary.InputHistorySearch();
+                    DefaultListModel listmodel = new DefaultListModel();
+                    listmodel.addAll(dictionary.getHistorySearch().values());
+                    lHistory.setModel(listmodel);
+                } catch (FileNotFoundException ex) {
+                    throw new RuntimeException(ex);
+                }
+                fillTable();
             }
-            fillTable();
         } else if (str.equals("btnSearchDefinition")) {
-            dictionary.findDefinitionSlangWord(tfSearch.getText());
-            try {
-                dictionary.addHistorySearch(tfSearch.getText());
-                dictionary.InputHistorySearch();
-                DefaultListModel listmodel= new DefaultListModel();
-                listmodel.addAll(dictionary.getHistorySearch().values());
-                lHistory.setModel(listmodel);
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
+            if(!tfSearch.getText().isEmpty()) {
+                dictionary.findDefinitionSlangWord(tfSearch.getText());
+
+                try {
+                    dictionary.addHistorySearch(tfSearch.getText());
+                    dictionary.InputHistorySearch();
+                    DefaultListModel listmodel = new DefaultListModel();
+                    listmodel.addAll(dictionary.getHistorySearch().values());
+                    lHistory.setModel(listmodel);
+                } catch (FileNotFoundException ex) {
+                    System.out.println("Lỗi này");
+                }
+                fillTable();
             }
-            fillTable();
         } else if (str.equals("btnAdd")) {
             AddFrm addFrm = new AddFrm();
             addFrm.setVisible(true);
@@ -466,6 +473,7 @@ public class Main extends JPanel implements ActionListener{
             lbSlangGame.setText("");
         } else if (str.equals("btnHistory")) {
             cl.show(pnCont,"History");
+
         } else if (str.equals("btnReset")) {
             int dialogResult = JOptionPane.showConfirmDialog (this, "Do you want to reset dictionary ?","Delete",JOptionPane.YES_NO_OPTION);
             if(dialogResult == JOptionPane.YES_OPTION) {

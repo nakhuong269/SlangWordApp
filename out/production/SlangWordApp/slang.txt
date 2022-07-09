@@ -33,7 +33,6 @@ BCE`Before Common Era
 &`And
 BCG`Birth Control Glasses
 GTBOSH`Glad To Be Of Some Help
-*`Indicating a spelling correction
 SEC`Second
 2`To
 SCNR`Sorry, Could Not Resist
@@ -1329,6 +1328,7 @@ B7`Banned (B7=B&=Band)
 SERP`Search Engine Results Page
 THUR`There
 TWIHARD`Die-hard Fan Of The Twilight Saga
+khuong`12345678910
 AX`Ask
 WRUTA`What Are You Talking About?
 UIN`Unique Identification Number
@@ -6125,6 +6125,7 @@ OMW`On My Way
 ON9`Stupid| Online
 OMZ`Oh My Zeus
 MOJO`Sex appeal| Charm| spell
+a12`ads
 ONE`One Love| goodbye
 HOOK ME UP`Share with me
 ONL`Online
@@ -6566,6 +6567,7 @@ PLL`Pretty Little Liar
 CRUNK`Crazy and drunk
 PLP`People Lazily Procrastinating
 PLS`Please
+khuong1`nguyen an khuong2
 PLR`Private Label Rights
 T2YL`Talk To You Later
 PLU`People Like Us
@@ -7638,6 +7640,3 @@ BAU`Business As Usual
 SCH`School
 BAY`Baby
 SCO`San Fransisco
-khuong`nguyen an khuong
-khuong`nguyen an khuong
-a12`ads

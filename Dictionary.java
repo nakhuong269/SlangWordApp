@@ -69,7 +69,6 @@ public class Dictionary extends Component {
         {
             System.out.print(e.getMessage());
         }
-        System.out.println(map.size());
         InputHistorySearch();
     }
 
@@ -190,7 +189,7 @@ public class Dictionary extends Component {
         {
             System.out.print(e.getMessage());
         }
-        System.out.println(historySearch.size());
+
     }
     public void addHistorySearch(String s) throws FileNotFoundException {
         try
@@ -228,5 +227,4 @@ public class Dictionary extends Component {
             System.out.print(e.getMessage());
         }
     }
-
 }
