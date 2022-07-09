@@ -4,26 +4,24 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.*;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class Main extends JPanel implements ActionListener{
-    JPanel pn1, pn2, pn3, pn4, pn5, pn6, pnCont , pn7, pn8  ;
-    JButton btnAdd, btnEdit, btnDelete, btnSearch, btnSearchDefinition, btnPageRandom,  btnRandom, btnReset, btnHome, btnGame;
-    JTextField tfSearch;
-    BoxLayout bl1, bl2, bl3;
+    JPanel pn1, pn2, pn3, pn4, pn5, pn6, pnCont , pn7, pn8, pn9, pn10, pn11, pn12;
 
-    JLabel lb1, lb2, lbSlang, lbMean;
+    JRadioButton rdbSlangGame, rdbMeanGame, rdbAnswerA, rdbAnswerB, rdbAnswerC, rdbAnswerD;
+    JButton btnAdd, btnEdit, btnDelete, btnSearch, btnSearchDefinition, btnPageRandom,  btnRandom, btnReset, btnHome, btnGame, btnRefeshGame, btnCheckGame ;
+    JTextField tfSearch;
+    BoxLayout bl1, bl2, bl3, bl4, bl5;
+
+    JLabel lb1, lb2, lbSlang, lbMean, lb3, lbGame, lbSlangGame;
     BorderLayout bdl1;
     FlowLayout fl1;
     CardLayout cl;
     String[] colHeader = { "Từ", "Nghĩa"};
+
+    ButtonGroup bgMode, bgAnswer;
 
     JTable jtbSlangWord;
     static Dictionary dictionary = new Dictionary();
@@ -131,7 +129,7 @@ public class Main extends JPanel implements ActionListener{
         lbSlang.setFont(new Font("Arial",Font.PLAIN, 34));
         lbMean = new JLabel();
         lbMean.setAlignmentX(CENTER_ALIGNMENT);
-        lbMean.setFont(new Font("Arial",Font.PLAIN, 28));
+        lbMean.setFont(new Font("Arial",Font.PLAIN, 26));
         lb1 = new JLabel("Từ: ");
         lb1.setAlignmentX(CENTER_ALIGNMENT);
         lb1.setFont(new Font("Arial",Font.PLAIN, 22));
@@ -139,7 +137,7 @@ public class Main extends JPanel implements ActionListener{
         lb2.setAlignmentX(CENTER_ALIGNMENT);
         lb2.setFont(new Font("Arial",Font.PLAIN, 22));
 
-        btnRandom = new JButton("Bắt đầu");
+        btnRandom = new JButton("Làm mới");
         btnRandom.addActionListener(this);
         btnRandom.setActionCommand("btnRandom");
         btnRandom.setAlignmentX(CENTER_ALIGNMENT);
@@ -158,7 +156,77 @@ public class Main extends JPanel implements ActionListener{
         pnCont.add(pn8, "Random");
 
         pn5 = new JPanel();
-        pn5.setBackground(Color.BLACK);
+
+
+        pn9 = new JPanel();
+        lb3 = new JLabel("Đố vui theo: ");
+        rdbSlangGame = new JRadioButton("Từ");
+        rdbMeanGame = new JRadioButton("Nghĩa");
+        lb3.setFont(new Font("Arial", Font.BOLD,22));
+        pn9.add(lb3);
+        pn9.add(rdbSlangGame);
+        pn9.add(Box.createRigidArea(new Dimension(20,0)));
+        pn9.add(rdbMeanGame);
+        rdbSlangGame.setActionCommand("Slang");
+        rdbSlangGame.addActionListener(this);
+        rdbMeanGame.setActionCommand("Mean");
+        rdbMeanGame.addActionListener(this);
+        bgMode= new ButtonGroup();
+        bgMode.add(rdbSlangGame);
+        bgMode.add(rdbMeanGame);
+
+
+
+        pn10 = new JPanel();
+        bl4 = new BoxLayout(pn10, BoxLayout.Y_AXIS);
+        pn10.setLayout(bl4);
+
+        lbGame = new JLabel();
+        lbGame.setFont(new Font("Arial",Font.BOLD,20));
+        lbGame.setAlignmentX(CENTER_ALIGNMENT);
+        pn10.add(lbGame);
+        pn10.add(Box.createRigidArea(new Dimension(0, 30)));
+
+        bgAnswer = new ButtonGroup();
+        rdbAnswerA = new JRadioButton();
+        rdbAnswerB = new JRadioButton();
+        rdbAnswerC = new JRadioButton();
+        rdbAnswerD = new JRadioButton();
+        bgAnswer.add(rdbAnswerA);
+        bgAnswer.add(rdbAnswerB);
+        bgAnswer.add(rdbAnswerC);
+        bgAnswer.add(rdbAnswerD);
+
+
+        pn10.add(rdbAnswerA);
+        pn10.add(Box.createRigidArea(new Dimension(0,30)));
+        pn10.add(rdbAnswerB);
+        pn10.add(Box.createRigidArea(new Dimension(0,30)));
+        pn10.add(rdbAnswerC);
+        pn10.add(Box.createRigidArea(new Dimension(0,30)));
+        pn10.add(rdbAnswerD);
+        pn10.add(Box.createRigidArea(new Dimension(0,30)));
+        pn10.setBorder(new EmptyBorder(0,0,80,0));
+
+
+
+        pn12 = new JPanel();
+        btnRefeshGame = new JButton("Refesh");
+        btnCheckGame = new JButton("Answer");
+        pn12.add(btnRefeshGame);
+        pn12.add(Box.createRigidArea(new Dimension(50, 0)));
+        pn12.add(btnCheckGame);
+
+        pn11 = new JPanel();
+        bl5 = new BoxLayout(pn11,BoxLayout.Y_AXIS);
+        pn11.setLayout(bl5);
+
+        pn11.add(pn9);
+        pn11.add(Box.createRigidArea(new Dimension(0,30)));
+        pn11.add(pn10);
+        pn11.add(pn12);
+
+        pn5.add(pn11);
         pnCont.add(pn5,"Game");
 
         //Table
@@ -207,7 +275,18 @@ public class Main extends JPanel implements ActionListener{
         {
             cl.show(pnCont,"Home");
         } else if (str.equals("btnGame")) {
+            rdbSlangGame.setSelected(true);
             cl.show(pnCont,"Game");
+            ArrayList<String> listSlangword =  dictionary.randomSlangWordGame();
+
+            lbGame.setText(listSlangword.get(0));
+            
+            Collections.shuffle(listSlangword);
+            rdbAnswerA.setText(dictionary.getMap().get(listSlangword.get(0)));
+            rdbAnswerB.setText(dictionary.getMap().get(listSlangword.get(1)));
+            rdbAnswerC.setText(dictionary.getMap().get(listSlangword.get(2)));
+            rdbAnswerD.setText(dictionary.getMap().get(listSlangword.get(3)));
+
         }
         else if (str.equals("btnPageRandom")) {
             cl.show(pnCont,"Random");

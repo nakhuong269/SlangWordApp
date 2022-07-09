@@ -10,7 +10,7 @@ public class Dictionary extends Component {
 
     private LinkedHashMap<String, String> resultSearch;
 
-    private LinkedHashMap<String,String> linkedHashMapRandom;
+    private ArrayList<String> randomArray;
 
     public Dictionary(LinkedHashMap<String, String> resultSearch) {
         this.resultSearch = resultSearch;
@@ -144,6 +144,17 @@ public class Dictionary extends Component {
         Object key = randomString[Index];
 
         return new SlangWord(key.toString(), map.get(key));
+    }
+
+    public ArrayList<String> randomSlangWordGame()
+    {
+        randomArray = new ArrayList<String>();
+        for(int i = 0 ; i < 4;i++)
+        {
+            SlangWord slangWord =  this.randomSlangWord();
+            randomArray.add(slangWord.getSlag());
+        }
+        return randomArray;
     }
 
 }
